@@ -8,7 +8,9 @@ import { MaterialModule } from './material/material.module';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-
+import { ToastrModule } from 'ngx-toastr';
+import { NgxSpinnerModule } from "ngx-spinner";
+import { CoreModule } from './core/core.module';
 @NgModule({
   declarations: [
     AppComponent
@@ -17,10 +19,13 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     MaterialModule,
     FormsModule,
+    CoreModule,
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
-    
+    ToastrModule.forRoot(),
+    NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
+
     BrowserAnimationsModule
   ],
   providers: [],

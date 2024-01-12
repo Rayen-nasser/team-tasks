@@ -8,3 +8,6 @@ textarea {
     min-height: 130px;
     max-height: 130px;
 }
+:host {
+  max-height: 90vh !important;
+}
