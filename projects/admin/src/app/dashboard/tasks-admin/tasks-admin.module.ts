@@ -7,12 +7,15 @@ import { AddTaskComponent } from './components/add-task/add-task.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from '../../material/material.module';
+import { ConfirmationComponent } from './components/confirmation/confirmation.component';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
   declarations: [
     ListTasksComponent,
-    AddTaskComponent
+    AddTaskComponent,
+    ConfirmationComponent
   ],
   imports: [
     FormsModule,
@@ -20,6 +23,7 @@ import { MaterialModule } from '../../material/material.module';
     ReactiveFormsModule,
     HttpClientModule,
     CommonModule,
+    SharedModule,
     TasksAdminRoutingModule
   ]
 })

@@ -1,77 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TasksService } from '../../services/tasks.service';
-import {MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddTaskComponent } from '../add-task/add-task.component';
-export interface PeriodicElement {
-  title: string;
-  user: string;
-  deadLineDate: string;
-  status: string;
-}
+import { TaskElement } from '../../modules/task-element';
+import { ConfirmationComponent } from '../confirmation/confirmation.component';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
+import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  {
-    status: 'Complete',
-    title: 'Hydrogen',
-    user: '1.0079',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'In-Prossing',
-    title: 'Helium',
-    user: '4.0026',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'Complete',
-    title: 'Lithium',
-    user: '6.941',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'Complete',
-    title: 'Beryllium',
-    user: '9.0122',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'Complete',
-    title: 'Boron',
-    user: '10.811',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'Complete',
-    title: 'Carbon',
-    user: '12.010',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'Complete',
-    title: 'Nitrogen',
-    user: '14.006',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'Complete',
-    title: 'Oxygen',
-    user: '15.999',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'Complete',
-    title: 'Fluorine',
-    user: '18.998',
-    deadLineDate: '10-11-2022',
-  },
-  {
-    status: 'Complete',
-    title: 'Neon',
-    user: '20.179',
-    deadLineDate: '10-11-2022',
-  },
-];
 @Component({
   selector: 'app-list-tasks',
   templateUrl: './list-tasks.component.html',
@@ -86,52 +24,141 @@ export class ListTasksComponent implements OnInit {
     'status',
     'actions',
   ];
-  dataSource = ELEMENT_DATA;
+  dataSource!: TaskElement[];
   tasksFilter!: FormGroup;
-  users: any = [
-    { name: 'Moahmed', id: 1 },
-    { name: 'Ali', id: 2 },
-    { name: 'Ahmed', id: 3 },
-    { name: 'Zain', id: 4 },
-  ];
+  page: any = 1
+  total: any
+  filtration: any = {
+    page: this.page,
+    limit: 3
+  };
+  timeOut: any;
 
-  status: any = [
-    { name: 'Complete', id: 1 },
-    { name: 'In-Prossing', id: 2 },
+  status: any = [{ name: 'Complete' }, { name: 'In-Progress' }];
+
+  users: any = [
+    { name: 'ali', id: '65a13e7945ee782f3e6468b9' },
+    { name: 'ahmed', id: '65a13ebc45ee782f3e6468bc' },
   ];
-  constructor(public dialog: MatDialog, private fb: FormBuilder, private service: TasksService) {}
+  constructor(
+    public dialog: MatDialog,
+    private fb: FormBuilder,
+    private service: TasksService,
+    private toaster: ToastrService,
+    private translate:TranslateService,
+   ) {
+
+    }
 
   ngOnInit(): void {
-    this.getAllTasks()
+    this.getAllTasks();
   }
 
-  createform() {
-    this.tasksFilter = this.fb.group({
-      title: [''],
-      userId: [''],
-      fromDate: [''],
-      toDate: [''],
-    });
+  selectUser(event: any) {
+    this.page = 1
+    this.filtration['page'] = 1
+    this.filtration['userId'] = event.value;
+    this.getAllTasks();
+  }
+
+  selectStatus(event: any) {
+    this.page = 1
+    this.filtration['page'] = 1
+    this.filtration['status'] = event.value;
+    this.getAllTasks();
+  }
+
+  selectDate(event: any, type: string) {
+    this.page = 1
+    this.filtration['page'] = 1
+    this.filtration[type] = moment(event.value).format("DD-MM-YYYY")
+    if(type === "toDate" && this.filtration["toDate"] !== "Invalid date"){
+      this.getAllTasks()
+    }
+  }
+
+  search(event: any) {
+    this.page = 1
+    this.filtration['page'] = 1
+    this.filtration['keyword'] = event.value;
+    clearTimeout(this.timeOut);
+    this.timeOut = setTimeout(() => {
+      this.getAllTasks();
+    }, 2000);
   }
 
   getAllTasks() {
-    this.service.getAllTasks().subscribe((res) => {
-      //console.log('response===>', res);
-    })
+    this.service.getAllTasks(this.filtration).subscribe(
+      (res: any) => {
+        this.dataSource = this.mappingTasks(res.tasks);
+        this.total = res.totalItems
+      }
+    );
   }
+
+  mappingTasks(data: any[]) {
+    let newFormTasks = data.map((item) => {
+      return {
+        ...item,
+        user: item.userId.username,
+      };
+    });
+
+    return newFormTasks;
+  }
+
   addTask() {
     const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.disableClose = false;
+    dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.maxWidth = '500px';
     dialogConfig.maxHeight = '90vh'; // Set the maximum height to 90% of the viewport height
 
     const dialogRef = this.dialog.open(AddTaskComponent, dialogConfig);
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog`);
+    dialogRef.afterClosed().subscribe((result) => {
+      this.getAllTasks();
     });
-
   }
+
+  updateTask(dataTask: any) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.maxWidth = '500px';
+    dialogConfig.maxHeight = '90vh';
+    dialogConfig.data = dataTask;
+
+    const dialogRef = this.dialog.open(AddTaskComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.getAllTasks();
+    });
+  }
+
+  ConfirmDeleteTask(id: any) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.width = '500px';
+    dialogConfig.height = 'auto';
+    dialogConfig.disableClose = true;
+    dialogConfig.data = {
+      type: "task",
+      id
+    }
+    const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.getAllTasks();
+    });
+  }
+
+  onTableDataChange(event : any){
+    this.page = event
+    this.filtration['page'] = event
+    this.getAllTasks()
+  }
+
 }

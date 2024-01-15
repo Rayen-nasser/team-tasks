@@ -3,14 +3,14 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path:'tasks', 
+    path:'tasks',
   loadChildren: () => import(`./tasks/tasks.module`).then(m => m.TasksModule)
   },
   {
-    path:'auth', 
+    path:'auth',
   loadChildren: () => import(`./auth/auth.module`).then(m => m.AuthModule)
   },
-
+  
 ];
 
 @NgModule({

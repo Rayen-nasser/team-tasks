@@ -1,70 +1,120 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit , Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { TasksService } from '../../services/tasks.service';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
 import * as moment from 'moment';
+import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
+import { UsersService } from '../../../manage-users/services/users.service';
+import { TasksService } from '../../services/tasks.service';
+import { CreateTask } from '../../modules/create-task';
+import { ConfirmationComponent } from '../confirmation/confirmation.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-task',
   templateUrl: './add-task.component.html',
-  styleUrls: ['./add-task.component.scss'],
+  styleUrls: ['./add-task.component.scss']
 })
 export class AddTaskComponent implements OnInit {
+
+  fileName! : string
+  newTaskForm!: FormGroup
+  oldTaskForm!: any
+
   constructor(
-    private fb: FormBuilder,
-    public dialog: MatDialogRef<AddTaskComponent>,
-    public matDialog: MatDialog,
-    private service: TasksService
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data:any,
+    private fb:FormBuilder ,
+    public dialog: MatDialogRef<AddTaskComponent> ,
+    public matDialog:MatDialog,
+    private service:TasksService,
+    private toaster:ToastrService,
+    private translate :TranslateService,
+    ) { }
 
-  users: any = [
-    { name: 'Moahmed', id: "65a13ebc45ee782f3e6468bc" },
-    { name: 'Ali', id: "65a13e7945ee782f3e6468b9" },
-  ];
-
-  newTaskForm!: FormGroup;
-  fileName=""
-
+  users:any = [
+    {name: "ali", id: "65a13e7945ee782f3e6468b9"},
+    {name: "ahmed", id: "65a13ebc45ee782f3e6468bc"},
+  ]
   ngOnInit(): void {
-    this.initForm()
-
+    console.log(this.data)
+    this.createForm()
   }
 
-  createTask(){
-    let model =  this.preparedFormData()
+
+
+  createForm() {
+    this.newTaskForm = this.fb.group({
+      title : [this.data?.title || "", [Validators.required , Validators.minLength(5)]],
+      userId : [this.data?.userId._id || "", Validators.required],
+      image : [this.data?.image || "", Validators.required ],
+      description : [this.data?.description || "", Validators.required],
+      deadline: [this.data ? new Date(this.data?.deadline.split('-').reverse().join('-')).toISOString() : "",  Validators.required]
+    })
+    this.fileName = this.data ?  this.data?.image : ""
+    this.oldTaskForm = this.newTaskForm.value
+  }
+
+
+  selectImage(event:any) {
+    this.fileName = event.target.value
+    this.newTaskForm.get('image')?.setValue(event.target.files[0])
     console.log(this.newTaskForm.value);
 
-    this.service.addTask(model).subscribe(
-      (res: any) => {
-        console.log('The task has been created successfully');
-      }
-    )
   }
 
-  preparedFormData(){
-    let newTime = moment(this.newTaskForm.value["deadline"]).format('DD-MM-YYYY')
-    let formData = new FormData()
-    Object.entries(this.newTaskForm.value).forEach(([key, value] : any) => {
-      if(key == "deadline"){
-        formData.append(key, newTime)
-      }else{
-        formData.append(key, value)
-      }
+  createTask() {
+
+    let model =  this.prepareFormData()
+    this.service.addTask(model).subscribe(res => {
+      this.toaster.success("Task Created Successfully" , "Success")
+      this.dialog.close(true)
     })
   }
 
-  onFileSelected(event: any): void {
-    this.fileName = event.target.value
-    this.newTaskForm.get('image')?.setValue(event.target.files[0]);
+  updateTask(){
+
+    let model =  this.prepareFormData()
+    this.service.editTask(this.data._id ,model).subscribe(res => {
+      this.toaster.success("Task Created Successfully" , "Success")
+      this.dialog.close(true)
+    })
   }
 
-    initForm() {
-      this.newTaskForm = this.fb.group({
-        title: ['',Validators.required],
-        userId: ['', Validators.required],
-        image: ['', Validators.required],
-        description: ['', Validators.required],
-        deadline: ['', Validators.required],
+
+
+  prepareFormData() {
+    let newData = moment(this.newTaskForm.value['deadline']).format('DD-MM-YYYY')
+    let formData = new FormData()
+    Object.entries(this.newTaskForm.value).forEach(([key , value] : any) => {
+
+      if(key == 'deadline') {
+        formData.append(key , newData)
+      }else {
+        formData.append(key , value)
+      }
+
+    })
+
+    return formData
+  }
+
+  close(){
+    let hasChange = false
+    Object.keys(this.oldTaskForm).forEach((item) => {
+      if(this.newTaskForm.value[item] !== this.oldTaskForm[item]){
+        hasChange = true
+      }
+    })
+
+    if(hasChange){
+      const dialogRef = this.matDialog.open(ConfirmationComponent, {
+        width: '750px',
+        disableClose: true
       });
+
+      dialogRef.afterClosed().subscribe(result => { });
+    }else{
+      this.dialog.close();
     }
+  }
 }

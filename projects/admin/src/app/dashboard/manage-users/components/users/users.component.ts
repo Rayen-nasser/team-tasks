@@ -1,23 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UsersService } from '../../services/users.service';
+import { ToastrService } from 'ngx-toastr';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ConfirmationComponent } from '../../../tasks-admin/components/confirmation/confirmation.component';
 export interface PeriodicElement {
   name: string;
   email: string;
   tasksAssigned: string;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { name: 'Hydrogen', email: "1.0079", tasksAssigned:"10-11-2022" },
-  { name: 'Helium', email: "4.0026", tasksAssigned:"10-11-2022" },
-  { name: 'Lithium', email: "6.941", tasksAssigned:"10-11-2022" },
-  { name: 'Beryllium', email: "9.0122", tasksAssigned:"10-11-2022" },
-  { name: 'Boron', email: "10.811", tasksAssigned:"10-11-2022" },
-  { name: 'Carbon', email: "12.010", tasksAssigned:"10-11-2022" },
-  { name: 'Nitrogen', email: "14.006", tasksAssigned:"10-11-2022" },
-  { name: 'Oxygen', email: "15.999", tasksAssigned:"10-11-2022" },
-  { name: 'Fluorine', email: "18.998", tasksAssigned:"10-11-2022" },
-  {  name: 'Neon', email: "20.179", tasksAssigned:"10-11-2022" },
-];
+
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
@@ -25,12 +17,43 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class UsersComponent implements OnInit {
   displayedColumns: string[] = ['position', 'name', 'email' ,'tasksAssigned', 'actions'];
-  dataSource = ELEMENT_DATA;
-  constructor() { }
+  dataSource = [];
+  constructor(
+    private service: UsersService,
+    private toaster: ToastrService,
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
+    this.getAllUsers()
   }
 
+  getAllUsers(){
+    this.service.getAll().subscribe((res: any) => {
+      this.dataSource = res.users
+    })
+  }
 
+  deleteUser(id : string){
+    this.service.delete(id).subscribe((res: any) => {
+      this.toaster.success(res.massage)
+    })
+  }
 
+  ConfirmDeleteTask(id: any) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.width = '500px';
+    dialogConfig.height = 'auto';
+    dialogConfig.disableClose = true;
+    dialogConfig.data = {
+      type: "user",
+      id
+    }
+    const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.getAllUsers();
+    });
+  }
 }

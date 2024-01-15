@@ -18,8 +18,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private service: LoginService,
     private toaster: ToastrService,
-    private router: Router,
-    private spinner: NgxSpinnerService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -35,17 +34,12 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.spinner.show()
+
     this.service.login(this.loginForm.value).subscribe(
       (res: any) => {
-        this.spinner.hide()
         localStorage.setItem('token' , res.token);
         this.toaster.success("Login Successfully", "Success");
         this.router.navigate(['tasks']);
-      },
-      (err) => {
-        this.spinner.hide()
-        this.toaster.error("An error occurred during login. Please try again.", "Error");
       }
     );
   }

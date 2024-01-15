@@ -1,5 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'projects/admin/src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,11 +11,27 @@ export class TasksService {
     private http: HttpClient
   ) { }
 
-  getAllTasks(){
-    return this.http.get('https://crud-a3ps.onrender.com/tasks/all-tasks')
+  getAllTasks(tasksFilter: any){
+    let params = new HttpParams()
+
+    Object.entries(tasksFilter).forEach(([key, value] : any) => {
+      if(value){
+        params = params.append(key, value)
+      }
+    })
+   
+    return this.http.get( environment.baseApi +'/all-tasks', {params})
   }
 
   addTask(newTask: any){
-    return this.http.post('https://crud-a3ps.onrender.com/tasks/add-task', newTask)
+    return this.http.post( environment.baseApi +'/add-task', newTask)
+  }
+
+  deleteTask(id: string){
+    return this.http.delete( environment.baseApi + '/delete-task/'+ id)
+  }
+
+  editTask(id: string, model: any ){
+    return this.http.put( environment.baseApi + '/edit-task/'+ id, model)
   }
 }
