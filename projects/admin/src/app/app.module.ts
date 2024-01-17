@@ -17,6 +17,7 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {HttpClient} from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -41,10 +42,10 @@ import { SharedModule } from './shared/shared.module';
           deps: [HttpClient]
       }
   }),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
   ],
   exports: [
-    NgxPaginationModule
+    NgxPaginationModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

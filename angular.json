@@ -110,8 +110,8 @@
               "node_modules/ngx-spinner/animations/square-jelly-box.css"
             ],
             "scripts": [
+              "./node_modules/jquery/dist/jquery.min.js",
               "./node_modules/bootstrap/dist/js/bootstrap.min.js"
-
             ]
           }
         }
@@ -136,6 +136,7 @@
             "main": "projects/admin/src/main.ts",
             "polyfills": "projects/admin/src/polyfills.ts",
             "tsConfig": "projects/admin/tsconfig.app.json",
+            "allowedCommonJsDependencies": ["moment"],
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/admin/src/favicon.ico",
@@ -149,8 +150,8 @@
               "node_modules/ngx-spinner/animations/square-jelly-box.css"
             ],
             "scripts": [
-              "./node_modules/bootstrap/dist/js/bootstrap.min.js"
-
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "./node_modules/jquery/dist/jquery.min.js"
             ]
           },
           "configurations": {
