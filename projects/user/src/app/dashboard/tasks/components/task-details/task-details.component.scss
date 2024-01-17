@@ -1,0 +1,44 @@
+.task-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.image-box {
+  margin-bottom: 20px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  font-size: 24px;
+  margin: 0;
+}
+
+button {
+  font-size: 16px;
+}
+
+.deadline {
+  color: #555;
+  font-size: 14px;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.5;
+}

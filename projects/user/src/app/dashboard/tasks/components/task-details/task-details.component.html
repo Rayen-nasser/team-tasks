@@ -1,0 +1,12 @@
+<div class="task-container mt-5">
+  <div class="image-box" *ngIf="task.image">
+    <img [src]="'https://crud-a3ps.onrender.com/' + task.image" [alt]="task.title" class="img-fluid">
+  </div>
+  <div class="title-bar">
+    <h1 class="card-title">{{ task.title }}</h1>
+    <button mat-raised-button color="warn" (click)="completeTask(task._id)">Complete</button>
+  </div>
+  <p class="deadline">Deadline: {{ (task.deadline) }}</p>
+  <hr>
+  <p class="description">{{ task.description }}</p>
+</div>

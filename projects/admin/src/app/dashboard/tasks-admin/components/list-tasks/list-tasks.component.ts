@@ -5,10 +5,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AddTaskComponent } from '../add-task/add-task.component';
 import { TaskElement } from '../../modules/task-element';
 import { ConfirmationComponent } from '../confirmation/confirmation.component';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
-import { TranslateService } from '@ngx-translate/core';
+import { UsersService } from '../../../manage-users/services/users.service';
 
 @Component({
   selector: 'app-list-tasks',
@@ -26,60 +24,57 @@ export class ListTasksComponent implements OnInit {
   ];
   dataSource!: TaskElement[];
   tasksFilter!: FormGroup;
-  page: any = 1
-  total: any
+  page: any = 1;
+  total: any;
   filtration: any = {
     page: this.page,
-    limit: 3
+    limit: 3,
   };
   timeOut: any;
 
   status: any = [{ name: 'Complete' }, { name: 'In-Progress' }];
 
-  users: any = [
-    { name: 'ali', id: '65a13e7945ee782f3e6468b9' },
-    { name: 'ahmed', id: '65a13ebc45ee782f3e6468bc' },
-  ];
+  users: any = [];
+  
   constructor(
     public dialog: MatDialog,
-    private fb: FormBuilder,
-    private service: TasksService,
-    private toaster: ToastrService,
-    private translate:TranslateService,
-   ) {
-
-    }
+    private serviceTasks: TasksService,
+    private serviceUsers: UsersService
+  ) {
+    this.getDataFromSubject();
+  }
 
   ngOnInit(): void {
     this.getAllTasks();
+    this.getUsers();
   }
 
   selectUser(event: any) {
-    this.page = 1
-    this.filtration['page'] = 1
+    this.page = 1;
+    this.filtration['page'] = 1;
     this.filtration['userId'] = event.value;
     this.getAllTasks();
   }
 
   selectStatus(event: any) {
-    this.page = 1
-    this.filtration['page'] = 1
+    this.page = 1;
+    this.filtration['page'] = 1;
     this.filtration['status'] = event.value;
     this.getAllTasks();
   }
 
   selectDate(event: any, type: string) {
-    this.page = 1
-    this.filtration['page'] = 1
-    this.filtration[type] = moment(event.value).format("DD-MM-YYYY")
-    if(type === "toDate" && this.filtration["toDate"] !== "Invalid date"){
-      this.getAllTasks()
+    this.page = 1;
+    this.filtration['page'] = 1;
+    this.filtration[type] = moment(event.value).format('DD-MM-YYYY');
+    if (type === 'toDate' && this.filtration['toDate'] !== 'Invalid date') {
+      this.getAllTasks();
     }
   }
 
   search(event: any) {
-    this.page = 1
-    this.filtration['page'] = 1
+    this.page = 1;
+    this.filtration['page'] = 1;
     this.filtration['keyword'] = event.value;
     clearTimeout(this.timeOut);
     this.timeOut = setTimeout(() => {
@@ -88,19 +83,17 @@ export class ListTasksComponent implements OnInit {
   }
 
   getAllTasks() {
-    this.service.getAllTasks(this.filtration).subscribe(
-      (res: any) => {
-        this.dataSource = this.mappingTasks(res.tasks);
-        this.total = res.totalItems
-      }
-    );
+    this.serviceTasks.getAllTasks(this.filtration).subscribe((res: any) => {
+      this.dataSource = this.mappingTasks(res.tasks);
+      this.total = res.totalItems;
+    });
   }
 
   mappingTasks(data: any[]) {
     let newFormTasks = data.map((item) => {
       return {
         ...item,
-        user: item.userId.username,
+        user: item.userId == null ? '' : item.userId.username,
       };
     });
 
@@ -113,7 +106,7 @@ export class ListTasksComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.maxWidth = '500px';
-    dialogConfig.maxHeight = '90vh'; // Set the maximum height to 90% of the viewport height
+    dialogConfig.maxHeight = '90vh';
 
     const dialogRef = this.dialog.open(AddTaskComponent, dialogConfig);
 
@@ -129,7 +122,7 @@ export class ListTasksComponent implements OnInit {
     dialogConfig.autoFocus = true;
     dialogConfig.maxWidth = '500px';
     dialogConfig.maxHeight = '90vh';
-    dialogConfig.data = dataTask;
+    dialogConfig.data = { ...dataTask };
 
     const dialogRef = this.dialog.open(AddTaskComponent, dialogConfig);
 
@@ -145,9 +138,9 @@ export class ListTasksComponent implements OnInit {
     dialogConfig.height = 'auto';
     dialogConfig.disableClose = true;
     dialogConfig.data = {
-      type: "task",
-      id
-    }
+      type: 'task',
+      id,
+    };
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -155,10 +148,29 @@ export class ListTasksComponent implements OnInit {
     });
   }
 
-  onTableDataChange(event : any){
-    this.page = event
-    this.filtration['page'] = event
-    this.getAllTasks()
+  getUsers() {
+    this.serviceUsers.getUsersData();
   }
 
+  getDataFromSubject() {
+    this.serviceUsers.userDate.subscribe((res: any) => {
+      this.users = this.usersMapping(res.data);
+    });
+  }
+
+  usersMapping(data: any[]) {
+    let newArray = data?.map((item) => {
+      return {
+        name: item.username,
+        id: item._id,
+      };
+    });
+    return newArray;
+  }
+
+  onTableDataChange(event: any) {
+    this.page = event;
+    this.filtration['page'] = event;
+    this.getAllTasks();
+  }
 }

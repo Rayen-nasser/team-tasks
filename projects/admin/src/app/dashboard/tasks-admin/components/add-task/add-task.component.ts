@@ -29,18 +29,32 @@ export class AddTaskComponent implements OnInit {
     private service:TasksService,
     private toaster:ToastrService,
     private translate :TranslateService,
-    ) { }
+    private serviceUsers: UsersService
+    ) {
+      this.getDataFromSubject()
+    }
 
-  users:any = [
-    {name: "ali", id: "65a13e7945ee782f3e6468b9"},
-    {name: "ahmed", id: "65a13ebc45ee782f3e6468bc"},
-  ]
+  users:any = []
   ngOnInit(): void {
-    console.log(this.data)
     this.createForm()
   }
 
 
+  getDataFromSubject(){
+    this.serviceUsers.userDate.subscribe((res:any)=>{
+      this.users = this.usersMapping(res.data)
+    })
+  }
+
+  usersMapping(data: any[]) {
+    let newArray = data?.map((item) => {
+      return {
+        name: item.username,
+        id: item._id,
+      };
+    });
+    return newArray;
+  }
 
   createForm() {
     this.newTaskForm = this.fb.group({
@@ -54,12 +68,9 @@ export class AddTaskComponent implements OnInit {
     this.oldTaskForm = this.newTaskForm.value
   }
 
-
   selectImage(event:any) {
     this.fileName = event.target.value
     this.newTaskForm.get('image')?.setValue(event.target.files[0])
-    console.log(this.newTaskForm.value);
-
   }
 
   createTask() {
@@ -79,8 +90,6 @@ export class AddTaskComponent implements OnInit {
       this.dialog.close(true)
     })
   }
-
-
 
   prepareFormData() {
     let newData = moment(this.newTaskForm.value['deadline']).format('DD-MM-YYYY')

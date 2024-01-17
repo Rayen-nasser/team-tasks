@@ -1,0 +1,49 @@
+
+{
+  "tasks": {
+    "addNewTask": "Add New Task",
+    "updateTask": "Update Task",
+    "title": "Title",
+    "titlePlaceholder": "Title",
+    "user": "User",
+    "attachment": "Attachment",
+    "chooseFile": "Choose File",
+    "deadlineDate": "Deadline Date",
+    "description": "Description",
+    "descriptionPlaceholder": "Task Description",
+    "deleteTask": "Delete Task",
+    "ignoreChanges": "Ignorance Changes"
+  },
+  "buttons": {
+    "create": "Create",
+    "update": "Update",
+    "close": "Close",
+    "delete": "delete",
+    "add": "Add Task",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "labels": {
+    "search": "Search",
+    "byUser": "By User",
+    "status": "Status",
+    "enterDateRange": "Enter a date range",
+    "title": "Title",
+    "user": "User",
+    "deadlineDate": "DeadLine Date"
+  },
+  "placeholders": {
+    "titleSearch": "Title search",
+    "startDate": "Start date",
+    "endDate": "End date"
+  },
+  "dialogs": {
+    "confirmDelete": "Confirm Delete",
+    "areYouSure": "Are you sure",
+    "deleteTaskConfirmation": "You want to delete this task",
+    "discardChangesConfirmation": "That you want to discard your changes"
+  },
+  "general": {
+    "loading": "loading"
+  }
+}

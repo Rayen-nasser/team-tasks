@@ -1,0 +1,49 @@
+
+{
+  "tasks": {
+    "addNewTask": "إضافة مهمة جديدة",
+    "updateTask": "تحديث المهمة",
+    "title": "العنوان",
+    "titlePlaceholder": "العنوان",
+    "user": "المستخدم",
+    "attachment": "المرفق",
+    "chooseFile": "اختر الملف",
+    "deadlineDate": "تاريخ الاستحقاق",
+    "description": "الوصف",
+    "descriptionPlaceholder": "وصف المهمة",
+    "deleteTask": "حذف المهمة",
+    "ignoreChanges": "تجاهل التغييرات"
+  },
+  "buttons": {
+    "create": "إنشاء",
+    "update": "تحديث",
+    "close": "إغلاق",
+    "delete": "حذف",
+    "add": "اضافة مهمة",
+    "yes": "نعم",
+    "no": "لا"
+  },
+  "labels": {
+    "search": "البحث",
+    "byUser": "حسب المستخدم",
+    "status": "الحالة",
+    "enterDateRange": "أدخل نطاق التاريخ",
+    "title": "العنوان",
+    "user": "المستخدم",
+    "deadlineDate": "تاريخ الانتهاء"
+  },
+  "dialogs": {
+    "confirmDelete": "تأكيد",
+    "areYouSure": "هل أنت متأكد",
+    "deleteTaskConfirmation": "هل تريد حقًا حذف هذه المهمة",
+    "discardChangesConfirmation": "أنك تريد تجاهل التغييرات الخاصة بك"
+  },
+  "placeholders": {
+    "titleSearch": "البحث عن العنوان",
+    "startDate": "تاريخ البداية",
+    "endDate": "تاريخ النهاية"
+  },
+  "general": {
+    "loading": "انتظر"
+  }
+}
