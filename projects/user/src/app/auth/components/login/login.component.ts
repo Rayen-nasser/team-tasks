@@ -25,8 +25,8 @@ export class LoginComponent implements OnInit {
 
   initialForm(){
     this.loginForm = this.fb.group({
-      email : ["", [Validators.required , Validators.email]],
-      password : ["", [Validators.required , Validators.minLength(8)]]
+      email : ["user@gmail.com", [Validators.required , Validators.email]],
+      password : ["user12345", [Validators.required , Validators.minLength(8)]]
     })
   }
 
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) return;
     const model = this.createFormDate()
     this.service.login(model).subscribe((res: any) => {
-      localStorage.setItem("token" , res["token"])
+      localStorage.setItem("tokenId" , res["token"])
       this.toaster.success("Login Successfully 😉")
       this.router.navigate(['tasks'])
     },(error) => {

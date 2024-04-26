@@ -68,7 +68,7 @@ export class RegisterComponent implements OnInit {
 
   handleRegistrationSuccess(res: any) {
     this.toaster.success("Register successfully");
-    localStorage.setItem('token', res.token);
+    localStorage.setItem('tokenId', res.token);
   }
 
 

@@ -77,7 +77,7 @@ export class ListTasksComponent implements OnInit {
   }
 
   getUserData(){
-    let token = JSON.stringify(localStorage.getItem('token'))
+    let token = JSON.stringify(localStorage.getItem('tokenId'))
     this.userDate = JSON.parse(window.atob(token.split('.')[1]))
   }
 
@@ -89,7 +89,7 @@ export class ListTasksComponent implements OnInit {
     })
   }
 
-  
+
 
   changePage(event:any) {
     this.page = event

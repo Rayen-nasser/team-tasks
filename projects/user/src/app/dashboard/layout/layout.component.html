@@ -9,7 +9,7 @@
         </li>
       </ul>
      <div class="nav-item">
-      <a class="nav-link" routerLink="/login">Logout</a>
+      <a class="nav-link" (click)="logout()" routerLink="/login">Logout</a>
       <a class="nav-link  bt-danger" (click)="changeLanguage()"> {{lang == 'en' ? 'عربي' : "English" }} </a>
      </div>
     </div>

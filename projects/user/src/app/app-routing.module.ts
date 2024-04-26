@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RegisterComponent } from './auth/components/register/register.component';
-import { LoginComponent } from './auth/components/login/login.component';
+import { UserGuard } from './core/guards/user.guard';
 
 const routes: Routes = [
 
@@ -10,8 +9,9 @@ const routes: Routes = [
   loadChildren: () => import(`./auth/auth.module`).then(m => m.AuthModule)
   },
   {
-    path:'',
-    loadChildren: () => import(`./dashboard/dashboard-routing.module`).then(m => m.DashboardRoutingModule)
+    path: '',
+    loadChildren: () => import('./dashboard/dashboard-routing.module').then(m => m.DashboardRoutingModule),
+    //canActivate: [UserGuard]
   }
 ];
 
